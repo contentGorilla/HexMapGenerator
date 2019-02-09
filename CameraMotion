@@ -1,0 +1,36 @@
+public class CameraMotion : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        oldPosition = this.transform.position;
+    }
+
+    Vector3 oldPosition;
+
+    // Update is called once per frame
+    void Update()
+    {
+         CheckIfCameraMoved();
+    }
+
+    HexComponent[] hexes;
+
+    void CheckIfCameraMoved()
+    {
+        if (oldPosition != this.transform.position)
+        {
+            // Something moved the camera.
+            oldPosition = this.transform.position;
+
+            HexComponent[] hexes = GameObject.FindObjectsOfType<HexComponent>();
+            
+            foreach(HexComponent hex in hexes)
+            {
+                hex.UpdatePosition();
+            }
+        }
+    }
+
+
+}
