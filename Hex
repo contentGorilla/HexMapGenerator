@@ -1,0 +1,95 @@
+//  The Hex class defines the grid position, workd space position, size,
+//  neighbours, etc... of a Hex Tile.  However, it does NOT interact with
+//  Unity directly in any way.
+public class Hex
+{
+
+    public Hex(HexMap hexMap,int q, int r)
+    {
+        this.HexMap = hexMap;
+
+        this.Q = q;
+        this.R = r;
+        this.S = -(q + r);
+    }
+
+    public readonly int Q;  // Column
+    public readonly int R;  // Row
+    public readonly int S;
+
+    static readonly float WIDTH_MULTIPLIER = 0.886f;
+    float radius = 0.554f;
+
+    //public bool allowWrapEastWest = true;
+    //public bool allowWrapNorthSouth = false;
+
+    public readonly HexMap HexMap;
+
+    public Vector3 Position()
+    {
+        return new Vector3(HexHorizontalSpacing() * (this.Q + this.R * 0.5f), 0, HexVerticalSpacing() * this.R);
+    }
+
+    public float HexHeight()
+    {
+        return radius * 2;
+    }
+
+    public float HexWidth()
+    {
+        return WIDTH_MULTIPLIER * HexHeight();
+    }
+
+    public float HexVerticalSpacing()
+    {
+        return HexHeight() * 0.75f;
+    }
+
+    public float HexHorizontalSpacing()
+    {
+        return HexWidth();
+    }
+
+    public Vector3 PositionFromCamera()
+    {
+        return HexMap.GetHexPosition(this);
+    }
+
+    public Vector3 PositionFromCamera(Vector3 cameraPosition, float numRows, float numColumns)
+    {
+        float mapHeight = numRows * HexVerticalSpacing();
+        float mapWidth = numColumns * HexHorizontalSpacing();
+
+        Vector3 position = Position();
+
+        if (HexMap.allowWrapEastWest)
+        {
+            float howManyWidthsFromCamera = (position.x - cameraPosition.x) / mapWidth;
+
+            if (howManyWidthsFromCamera > 0)
+                howManyWidthsFromCamera += 0.5f;
+            else
+                howManyWidthsFromCamera -= 0.5f;
+
+            int howManyWidthToFix = (int)howManyWidthsFromCamera;
+
+            position.x -= howManyWidthToFix * mapWidth;
+        }
+
+        if (HexMap.allowWrapNorthSouth)
+        {
+            float howManyHeightsFromCamera = (position.z - cameraPosition.z) / mapHeight;
+
+            if (howManyHeightsFromCamera > 0)
+                howManyHeightsFromCamera += 0.5f;
+            else
+                howManyHeightsFromCamera -= 0.5f;
+
+            int howManyHeightsToFix = (int)howManyHeightsFromCamera;
+
+            position.z -= howManyHeightsToFix * mapHeight;
+        }
+
+        return position;
+    }
+}
