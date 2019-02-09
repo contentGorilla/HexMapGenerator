@@ -1,0 +1,16 @@
+public class HexMap_Continent : HexMap
+{
+    public override void GenerateMap()
+    {
+        // First call the base version to make all the hexes.
+        base.GenerateMap();
+
+        // Make some kind of raised area
+
+        // Add lumpiness Perlin Noise?
+
+        // Set mesh to mountain/flat/water based on height
+
+        // Simulate rainfall/moisture and set plains/grasslands and forest
+    }
+}
